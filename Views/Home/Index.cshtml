@@ -1,0 +1,13 @@
+@{
+    Layout = "_Layout";
+    dynamic c = Model;
+}
+<h3>Dashboard</h3>
+<ul>
+  <li><strong>Users</strong>: @c.UsersCount</li>
+  <li><strong>Videos</strong>: @c.VideosCount</li>
+  <li><strong>Onboarding cards</strong>: @c.OnboardingCount</li>
+  <li><strong>Sessions</strong>: @c.SessionsCount</li>
+  <li><strong>Activities</strong>: @c.ActivityCount</li>
+</ul>
+<p><a href="/api/seed-preview" target="_blank">View seed preview JSON</a> · <a href="/api/health" target="_blank">Health</a></p>

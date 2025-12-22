@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>CRM Admin</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Pico CSS via cdnjs -->
+  <link rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/pico.css/2.0.6/pico.min.css"
+        integrity="sha512-mbC5+E6sTQ6bQ0xm4leM9mGQ6KAtJkQO3m1Jv6tXy2m8oXNw2KzS2Qx8i8rQF2G0m7x3w9GqXH5XH8N7W+E+pg=="
+        crossorigin="anonymous"
+        referrerpolicy="no-referrer" />
+  <style>
+    .stage { padding:.25rem .5rem; border-radius:.5rem; background:#eef; font-size:.85rem;}
+    .badge { padding:.2rem .45rem; border-radius:999px; background:#eee; }
+    nav a { margin-right:.75rem; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <header>
+      <h2>CRM Admin</h2>
+      <nav>
+    <a href="/">Dashboard</a>
+    <a href="/Onboarding">Onboarding</a>
+    <a href="/Videos">Videos</a>
+    <a href="/Sessions">Sessions</a>
+
+    <span style="float:right;">
+        @if (User?.Identity?.IsAuthenticated ?? false)
+        {
+            <span>Hello, @User.Identity.Name!</span>
+            <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
+                @Html.AntiForgeryToken()
+                <button type="submit" style="margin-left:.5rem;">Logout</button>
+            </form>
+        }
+        else
+        {
+            <a href="/Account/Login">Login</a>
+        }
+    </span>
+</nav>
+
+      <hr />
+    </header>
+    <section>
+      @RenderBody()
+    </section>
+  </main>
+</body>
+</html>

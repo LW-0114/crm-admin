@@ -1,0 +1,54 @@
+@model IEnumerable<CrmAdmin.Web.Controllers.VideosController.VideoRow>
+@{
+    Layout = "_Layout";
+    var personId = (string)(ViewBag.PersonId ?? "LWRAITH");
+}
+
+<h3>Videos (@personId)</h3>
+
+@if (TempData["msg"] is string msg)
+{
+    <p><mark>@msg</mark></p>
+}
+
+<table>
+    <thead>
+        <tr>
+            <th>Title</th>
+            <th>Required</th>
+            <th>Watched</th>
+            <th>Signed off</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var v in Model)
+    {
+        <tr>
+            <td>
+                <a href="@v.Url" target="_blank" rel="noopener noreferrer">
+                    @v.Title
+                </a>
+            </td>
+            <td>@(v.IsRequired ? "Yes" : "No")</td>
+            <td>@v.WatchedPct%</td>
+            <td>@(v.SignedOff ? "Yes" : "No")</td>
+            <td>
+                @if (!v.SignedOff)
+                {
+                    <form method="post" asp-action="SignOff" asp-controller="Videos">
+                        @Html.AntiForgeryToken()
+                        <input type="hidden" name="id" value="@v.Id" />
+                        <input type="hidden" name="personId" value="@personId" />
+                        <button type="submit">Sign off</button>
+                    </form>
+                }
+                else
+                {
+                    <span class="badge">Done</span>
+                }
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

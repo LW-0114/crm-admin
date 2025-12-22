@@ -1,0 +1,18 @@
+@model IEnumerable<CrmAdmin.Web.Controllers.SessionsController.SessionRow>
+@{ Layout = "_Layout"; }
+<h3>Sessions</h3>
+<table>
+  <thead><tr><th>Title</th><th>When (UTC)</th><th>Trainer</th><th>Location</th><th>Attendees</th></tr></thead>
+  <tbody>
+  @foreach (var s in Model)
+  {
+    <tr>
+      <td>@s.Title</td>
+      <td>@s.StartUtc.ToString("yyyy-MM-dd HH:mm") – @s.EndUtc.ToString("HH:mm")</td>
+      <td>@s.Trainer</td>
+      <td>@s.Location</td>
+      <td>@s.Attendees</td>
+    </tr>
+  }
+  </tbody>
+</table>
