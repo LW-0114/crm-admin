@@ -2,12 +2,38 @@
     Layout = "_Layout";
     dynamic c = Model;
 }
+
 <h3>Dashboard</h3>
-<ul>
-  <li><strong>Users</strong>: @c.UsersCount</li>
-  <li><strong>Videos</strong>: @c.VideosCount</li>
-  <li><strong>Onboarding cards</strong>: @c.OnboardingCount</li>
-  <li><strong>Sessions</strong>: @c.SessionsCount</li>
-  <li><strong>Activities</strong>: @c.ActivityCount</li>
-</ul>
-<p><a href="/api/seed-preview" target="_blank">View seed preview JSON</a> · <a href="/api/health" target="_blank">Health</a></p>
+<p>Quick overview of training and onboarding activity.</p>
+
+<div class="card-grid">
+  <article class="card">
+    <h4>Users</h4>
+    <p><strong>@c.UsersCount</strong></p>
+    <small>Users in the system</small>
+  </article>
+
+  <article class="card">
+    <h4>Videos</h4>
+    <p><strong>@c.VideosCount</strong></p>
+    <small>Training videos available</small>
+  </article>
+
+  <article class="card">
+    <h4>Onboarding</h4>
+    <p><strong>@c.OnboardingCount</strong></p>
+    <small>Onboarding records</small>
+  </article>
+
+  <article class="card">
+    <h4>Sessions</h4>
+    <p><strong>@c.SessionsCount</strong></p>
+    <small>Training sessions scheduled</small>
+  </article>
+</div>
+
+<p style="margin-top:1.5rem;">
+  <a href="/Onboarding">View onboarding</a> ·
+  <a href="/Videos">View videos</a> ·
+  <a href="/Sessions">View sessions</a>
+</p>

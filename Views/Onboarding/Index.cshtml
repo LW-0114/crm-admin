@@ -1,18 +1,31 @@
 @model IEnumerable<CrmAdmin.Web.Controllers.OnboardingController.Row>
-@{ Layout = "_Layout"; }
+@{
+    Layout = "_Layout";
+}
+
 <h3>Onboarding</h3>
+<p>Current onboarding records and their stages.</p>
+
 <table>
-  <thead><tr><th>Person</th><th>Stage</th><th>Owner</th><th>Due</th><th>Progress</th></tr></thead>
+  <thead>
+    <tr>
+      <th>Person</th>
+      <th>Stage</th>
+      <th>Owner</th>
+      <th>Due</th>
+      <th>Progress</th>
+    </tr>
+  </thead>
   <tbody>
   @foreach (var r in Model)
   {
-    <tr>
-      <td>@r.FullName (@r.PersonId)</td>
-      <td><span class="stage">@r.Stage</span></td>
-      <td>@r.Owner</td>
-      <td>@(r.DueDate?.ToString("yyyy-MM-dd") ?? "—")</td>
-      <td><span class="badge">@r.ProgressPct%</span></td>
-    </tr>
+      <tr>
+        <td>@r.FullName (@r.PersonId)</td>
+        <td><span class="pill">@r.Stage</span></td>
+        <td>@r.Owner</td>
+        <td>@(r.DueDate?.ToString("yyyy-MM-dd") ?? "—")</td>
+        <td>@r.ProgressPct%</td>
+      </tr>
   }
   </tbody>
 </table>

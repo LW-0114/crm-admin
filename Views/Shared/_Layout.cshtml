@@ -1,49 +1,80 @@
 <!doctype html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8" />
   <title>CRM Admin</title>
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <!-- Pico CSS via cdnjs -->
   <link rel="stylesheet"
         href="https://cdnjs.cloudflare.com/ajax/libs/pico.css/2.0.6/pico.min.css"
         integrity="sha512-mbC5+E6sTQ6bQ0xm4leM9mGQ6KAtJkQO3m1Jv6tXy2m8oXNw2KzS2Qx8i8rQF2G0m7x3w9GqXH5XH8N7W+E+pg=="
         crossorigin="anonymous"
         referrerpolicy="no-referrer" />
   <style>
-    .stage { padding:.25rem .5rem; border-radius:.5rem; background:#eef; font-size:.85rem;}
-    .badge { padding:.2rem .45rem; border-radius:999px; background:#eee; }
-    nav a { margin-right:.75rem; }
+    body {
+      min-height: 100vh;
+    }
+    header.site-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1rem;
+    }
+    nav.main-nav a {
+      margin-right: 0.75rem;
+    }
+    .pill {
+      display: inline-block;
+      padding: 0.15rem 0.6rem;
+      border-radius: 999px;
+      background: #eee;
+      font-size: 0.8rem;
+    }
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 1rem;
+    }
+    .card {
+      border-radius: 0.75rem;
+      border: 1px solid #ddd;
+      padding: 1rem;
+      background: #fff;
+    }
   </style>
 </head>
 <body>
   <main class="container">
-    <header>
-      <h2>CRM Admin</h2>
-      <nav>
-    <a href="/">Dashboard</a>
-    <a href="/Onboarding">Onboarding</a>
-    <a href="/Videos">Videos</a>
-    <a href="/Sessions">Sessions</a>
+    <header class="site-header">
+      <div>
+        <h2>CRM Admin</h2>
+        <small>Training & Onboarding Module</small>
+      </div>
 
-    <span style="float:right;">
-        @if (User?.Identity?.IsAuthenticated ?? false)
-        {
-            <span>Hello, @User.Identity.Name!</span>
-            <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
-                @Html.AntiForgeryToken()
-                <button type="submit" style="margin-left:.5rem;">Logout</button>
-            </form>
-        }
-        else
-        {
-            <a href="/Account/Login">Login</a>
-        }
-    </span>
-</nav>
+      <div style="text-align:right;">
+        <nav class="main-nav">
+          <a href="/">Dashboard</a>
+          <a href="/Onboarding">Onboarding</a>
+          <a href="/Videos">Videos</a>
+          <a href="/Sessions">Sessions</a>
+        </nav>
 
-      <hr />
+        <div>
+          @if (User?.Identity?.IsAuthenticated ?? false)
+          {
+              <span class="pill">Hello, @User.Identity!.Name</span>
+              <form asp-controller="Account" asp-action="Logout" method="post" style="display:inline;">
+                  @Html.AntiForgeryToken()
+                  <button type="submit" style="margin-left:0.5rem;">Logout</button>
+              </form>
+          }
+          else
+          {
+              <a href="/Account/Login">Login</a>
+          }
+        </div>
+      </div>
     </header>
+
     <section>
       @RenderBody()
     </section>

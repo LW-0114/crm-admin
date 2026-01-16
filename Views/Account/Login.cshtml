@@ -5,9 +5,12 @@
 
 <h3>Login</h3>
 
-@if (!ViewData.ModelState.IsValid && ViewData.ModelState.ErrorCount > 0)
+@if (!ViewData.ModelState.IsValid)
 {
-    <p><mark>Login failed. Please check your details.</mark></p>
+    foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+    {
+        <p><mark>@error.ErrorMessage</mark></p>
+    }
 }
 
 <form asp-action="Login" method="post">
@@ -33,5 +36,8 @@
 </form>
 
 <p>
-    <small>For dev: use a username from <code>MockMaximizerUsers</code> and password <code>Passw0rd!</code>.</small>
+    <small>
+        For dev: use a username from <code>MockMaximizerUsers</code>
+        and password <code>Passw0rd!</code>.
+    </small>
 </p>

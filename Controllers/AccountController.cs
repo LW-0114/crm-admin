@@ -52,6 +52,20 @@ WHERE UPPER(LoginName) = UPPER(@loginName);",
                 ModelState.AddModelError(string.Empty, "Invalid username or password.");
                 return View(model);
             }
+			
+			// Check active status (default to active if no row exists)
+var isActive = await conn.QuerySingleOrDefaultAsync<bool?>(@"
+SELECT CAST(IsActive AS bit)
+FROM dbo.UserStatus
+WHERE UPPER(LoginName) = UPPER(@loginName);",
+    new { loginName = user.LoginName });
+
+if (isActive.HasValue && isActive.Value == false)
+{
+    ModelState.AddModelError(string.Empty, "Your account has been deactivated. Please contact an administrator.");
+    return View(model);
+}
+
 
             // For dev: accept any non-empty password or a fixed password
             // e.g. "Passw0rd!" – you can change this later.

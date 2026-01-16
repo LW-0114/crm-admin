@@ -1,0 +1,55 @@
+@model IEnumerable<CrmAdmin.Web.Controllers.AdminUsersController.UserRow>
+@{
+    Layout = "_Layout";
+}
+
+<h3>Admin: Users</h3>
+<p>This page lists users from <code>MockMaximizerUsers</code>. Active/Inactive status is stored in <code>UserStatus</code>.</p>
+
+@if (TempData["msg"] is string msg)
+{
+    <p><mark>@msg</mark></p>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Login</th>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Status</th>
+            <th>Updated</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var u in Model)
+    {
+        <tr>
+            <td>@u.LoginName</td>
+            <td>@u.FullName</td>
+            <td>@(string.IsNullOrWhiteSpace(u.Email) ? "—" : u.Email)</td>
+            <td>
+                @if (u.IsActive)
+                {
+                    <span class="badge bg-success">Active</span>
+                }
+                else
+                {
+                    <span class="badge bg-secondary">Inactive</span>
+                }
+            </td>
+            <td>@(u.UpdatedUtc?.ToString("yyyy-MM-dd HH:mm") ?? "—")</td>
+            <td>
+                <form asp-action="Toggle" method="post" style="margin:0;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="loginName" value="@u.LoginName" />
+                    <button type="submit" class="btn btn-sm btn-outline-primary">
+                        @(u.IsActive ? "Deactivate" : "Activate")
+                    </button>
+                </form>
+            </td>
+        </tr>
+    }
+    </tbody>
+</table>

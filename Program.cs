@@ -21,11 +21,6 @@ builder.Services.AddAuthorization();
 
 var app = builder.Build();
 
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi(); // if you're still using this
-}
-
 app.UseHttpsRedirection();
 app.UseStaticFiles();
 
@@ -34,7 +29,7 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+// MVC routes (this is what enables /AdminUsers)
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
