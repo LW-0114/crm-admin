@@ -29,11 +29,13 @@ namespace CrmAdmin.Web.Controllers
         );
 
         // GET /Videos
-        public async Task<IActionResult> Index(string personId = "LWRAITH")
-        {
-            using var conn = _db.AppDb();
+        public async Task<IActionResult> Index()
+{
+    var personId = User?.Identity?.Name ?? "UNKNOWN";
 
-            var sql = @"
+    using var conn = _db.AppDb();
+
+    var sql = @"
 SELECT 
     v.Id,
     v.Title,
@@ -48,24 +50,23 @@ LEFT JOIN dbo.VideoProgress p
    AND p.PersonId = @personId
 ORDER BY v.Title;
 ";
-            var rows = await conn.QueryAsync<VideoRow>(sql, new { personId });
+    var rows = await conn.QueryAsync<VideoRow>(sql, new { personId });
 
-            ViewBag.PersonId = personId;
-            return View(rows);
-        }
+    ViewBag.PersonId = personId;
+    return View(rows);
+}
+
 
         // POST /Videos/SignOff
         [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> SignOff(Guid id, string personId)
-        {
-            if (personId is null or { Length: 0 })
-                personId = "LWRAITH"; // fallback for now
+[ValidateAntiForgeryToken]
+public async Task<IActionResult> SignOff(Guid id)
+{
+    var personId = User?.Identity?.Name ?? "UNKNOWN";
 
-            using var conn = _db.AppDb();
+    using var conn = _db.AppDb();
 
-            // Upsert progress & sign-off
-            var upsert = @"
+    var upsert = @"
 MERGE dbo.VideoProgress AS tgt
 USING (SELECT @personId AS PersonId, @id AS VideoId) AS src
 ON (tgt.PersonId = src.PersonId AND tgt.VideoId = src.VideoId)
@@ -78,18 +79,17 @@ WHEN NOT MATCHED THEN
     INSERT (PersonId, VideoId, WatchedPct, SignedOff, SignedOffUtc)
     VALUES (src.PersonId, src.VideoId, 100, 1, SYSUTCDATETIME());
 ";
+    await conn.ExecuteAsync(upsert, new { id, personId });
 
-            await conn.ExecuteAsync(upsert, new { id, personId });
-
-            // Add activity entry
-            var activity = @"
+    var activity = @"
 INSERT INTO dbo.Activity (EntityType, EntityId, Kind, Title, Body, Actor)
 VALUES ('Video', @id, 'signoff', 'Video signed off', NULL, @personId);
 ";
-            await conn.ExecuteAsync(activity, new { id, personId });
+    await conn.ExecuteAsync(activity, new { id, personId });
 
-            TempData["msg"] = "Video signed off successfully.";
-            return RedirectToAction(nameof(Index), new { personId });
-        }
+    TempData["msg"] = "Video signed off successfully.";
+    return RedirectToAction(nameof(Index));
+}
+
     }
 }

@@ -1,10 +1,10 @@
 @model IEnumerable<CrmAdmin.Web.Controllers.VideosController.VideoRow>
 @{
     Layout = "_Layout";
-    var personId = (string)(ViewBag.PersonId ?? "LWRAITH");
-}
+    }
 
-<h3>Videos (@personId)</h3>
+<h3>Videos (@User.Identity?.Name
+)</h3>
 
 @if (TempData["msg"] is string msg)
 {
@@ -37,11 +37,11 @@
                 @if (!v.SignedOff)
                 {
                     <form method="post" asp-action="SignOff" asp-controller="Videos">
-                        @Html.AntiForgeryToken()
-                        <input type="hidden" name="id" value="@v.Id" />
-                        <input type="hidden" name="personId" value="@personId" />
-                        <button type="submit">Sign off</button>
-                    </form>
+    @Html.AntiForgeryToken()
+    <input type="hidden" name="id" value="@v.Id" />
+    <button type="submit">Sign off</button>
+</form>
+
                 }
                 else
                 {
