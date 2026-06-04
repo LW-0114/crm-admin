@@ -1,0 +1,76 @@
+@model IEnumerable<CrmAdmin.Web.Controllers.OnboardingController.Row>
+@{
+    Layout = "_Layout";
+    var stages = new[] { "Invited", "Account Setup", "Intro Video", "Core Videos", "Sign-offs Pending", "Booked Live Training", "Completed" };
+    var grouped = Model.GroupBy(r => r.Stage).ToDictionary(g => g.Key, g => g.ToList());
+}
+
+<h3>Onboarding</h3>
+<p>Current onboarding records and their stages.</p>
+
+{{!-- ── Desktop Kanban (hidden on mobile) ── --}}
+<div class="kanban-board" style="display:flex; gap:1rem; overflow-x:auto; padding-bottom:1rem;">
+  @foreach (var stage in stages)
+  {
+    var cards = grouped.ContainsKey(stage) ? grouped[stage] : new();
+    <div style="min-width:200px; background:#f4f5f7; border-radius:8px; padding:.75rem;">
+      <strong style="font-size:.85rem; text-transform:uppercase; letter-spacing:.05em;">@stage</strong>
+      <span style="float:right; background:#ddd; border-radius:999px; padding:.1rem .5rem; font-size:.8rem;">@cards.Count</span>
+      <div style="margin-top:.75rem; display:flex; flex-direction:column; gap:.5rem;">
+        @foreach (var r in cards)
+        {
+          <div style="background:#fff; border-radius:6px; padding:.6rem .75rem; box-shadow:0 1px 3px rgba(0,0,0,.1);">
+            <div style="font-weight:600; font-size:.9rem;">@r.FullName</div>
+            <div style="font-size:.78rem; color:#666;">@r.PersonId</div>
+            @if (r.DueDate.HasValue)
+            {
+              <div style="font-size:.75rem; color:#999; margin-top:.25rem;">Due: @r.DueDate.Value.ToString("dd MMM")</div>
+            }
+            <div style="margin-top:.4rem; background:#e0e0e0; border-radius:999px; height:6px;">
+              <div style="width:@(r.ProgressPct)%; background:#4a90e2; border-radius:999px; height:6px;"></div>
+            </div>
+            <div style="font-size:.72rem; color:#888; text-align:right;">@r.ProgressPct%</div>
+          </div>
+        }
+        @if (!cards.Any())
+        {
+          <div style="font-size:.8rem; color:#aaa; text-align:center; padding:.5rem 0;">Empty</div>
+        }
+      </div>
+    </div>
+  }
+</div>
+
+{{!-- ── Mobile fallback table (shown on small screens via CSS) ── --}}
+<style>
+  .kanban-board { display: flex !important; }
+  .mobile-table { display: none; }
+  @@media (max-width: 640px) {
+    .kanban-board { display: none !important; }
+    .mobile-table { display: table; width: 100%; }
+  }
+</style>
+
+<table class="mobile-table">
+  <thead>
+    <tr>
+      <th>Person</th>
+      <th>Stage</th>
+      <th>Owner</th>
+      <th>Due</th>
+      <th>Progress</th>
+    </tr>
+  </thead>
+  <tbody>
+  @foreach (var r in Model)
+  {
+      <tr>
+        <td>@r.FullName (@r.PersonId)</td>
+        <td><span class="pill">@r.Stage</span></td>
+        <td>@r.Owner</td>
+        <td>@(r.DueDate?.ToString("yyyy-MM-dd") ?? "—")</td>
+        <td>@r.ProgressPct%</td>
+      </tr>
+  }
+  </tbody>
+</table>
